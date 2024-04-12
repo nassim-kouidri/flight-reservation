@@ -12,35 +12,49 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserAccountService {
 
-        private final UserAccountRepository userAccountRepository;
+    private final UserAccountRepository userAccountRepository;
 
-        public UserAccount getUserAccountById(UUID id) {
-            return userAccountRepository.findById(id).
-                    orElseThrow(() -> new IllegalArgumentException("User account not found"));
-        }
+    public UserAccount getUserAccountById(UUID id) {
+        return userAccountRepository.findById(id).
+                orElseThrow(() -> new IllegalArgumentException("User account not found"));
+    }
 
-        public List<UserAccount> getAllUserAccounts() {
-            return userAccountRepository.findAll();
-        }
+    public List<UserAccount> getAllUserAccounts() {
+        return userAccountRepository.findAll();
+    }
 
-        public UserAccount saveUserAccount(UserAccount userAccount) {
-            if(userAccountRepository.existsByEmail(userAccount.getEmail())) {
-                throw new IllegalArgumentException("Email already exists");
-            }
-            return userAccountRepository.save(userAccount);
+    public UserAccount saveUserAccount(UserAccount userAccount) {
+        if (isEmailExists(userAccount.getEmail())) {
+            throw new IllegalArgumentException("Email already exists");
         }
+        return userAccountRepository.save(userAccount);
+    }
 
-        public void updateUserAccount(UserAccount userAccount) {
-            if(userAccountRepository.existsByEmail(userAccount.getEmail())) {
-                throw new IllegalArgumentException("Email already exists");
-            }
-            userAccountRepository.save(userAccount);
-        }
 
-        public void deleteUserAccount(UUID id) {
-            if(!userAccountRepository.existsById(id)) {
-                throw new IllegalArgumentException("User account not found");
-            }
-            userAccountRepository.deleteById(id);
+
+    public UserAccount updateUserAccount(UserAccount userAccount, UUID id) {
+        UserAccount user = getUserAccountById(id);
+        if(!user.getEmail().equals(userAccount.getEmail()) && isEmailExists(userAccount.getEmail())) {
+            throw new IllegalArgumentException("Email already exists");
         }
+        user.setEmail(userAccount.getEmail());
+        user.setFirstName(userAccount.getFirstName());
+        user.setLastName(userAccount.getLastName());
+        user.setAddress(userAccount.getAddress());
+        user.setBirthday(userAccount.getBirthday());
+        user.setTel(userAccount.getTel());
+
+        return userAccountRepository.save(user);
+    }
+
+    public void deleteUserAccount(UUID id) {
+        if (!userAccountRepository.existsById(id)) {
+            throw new IllegalArgumentException("User account not found");
+        }
+        userAccountRepository.deleteById(id);
+    }
+
+    private boolean isEmailExists(String email) {
+        return userAccountRepository.existsByEmail(email);
+    }
 }

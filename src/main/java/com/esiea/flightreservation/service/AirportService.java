@@ -22,20 +22,24 @@ public class AirportService {
         return airportRepository.findAll();
     }
 
-    public Airport saveAirport(Airport airport) {
+    public Airport saveAirport(Airport airportRequest) {
+        return airportRepository.save(airportRequest);
+    }
+
+    public Airport updateAirport(Airport airportRequest, UUID id) {
+        Airport airport = getAirportById(id);
+        airport.setName(airportRequest.getName());
+        airport.setCity(airportRequest.getCity());
+        airport.setCountry(airportRequest.getCountry());
+
         return airportRepository.save(airport);
     }
 
-    public void updateAirport(Airport airport) {
-        airportRepository.save(airport);
-    }
-
     public void deleteAirport(UUID id) {
-        if(!airportRepository.existsById(id)) {
+        if (!airportRepository.existsById(id)) {
             throw new IllegalArgumentException("Airport not found");
         }
         airportRepository.deleteById(id);
     }
-
 
 }
