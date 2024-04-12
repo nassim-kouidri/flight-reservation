@@ -34,8 +34,8 @@ public class Flight extends BaseEntity{
     private Airport airportArrival;
 
     @ManyToOne
-    @JoinColumn(name = "flight_id")
-    private Flight flight;
+    @JoinColumn(name = "plane_id")
+    private Plane plane;
 
     private int placeNumber;
 
