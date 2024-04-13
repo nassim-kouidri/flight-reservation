@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
-public class Airport extends BaseEntity{
+public class Airport extends BaseEntity {
 
     String name;
 

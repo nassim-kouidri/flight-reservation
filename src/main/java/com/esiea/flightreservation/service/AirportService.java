@@ -15,7 +15,7 @@ public class AirportService {
     private final AirportRepository airportRepository;
 
     public Airport getAirportById(UUID id) {
-        return airportRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Airport not found"));
+        return airportRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(String.format("Airport with id '%s' not found", id)));
     }
 
     public List<Airport> getAllAirports() {
@@ -37,7 +37,7 @@ public class AirportService {
 
     public void deleteAirport(UUID id) {
         if (!airportRepository.existsById(id)) {
-            throw new IllegalArgumentException("Airport not found");
+            throw new IllegalArgumentException(String.format("Airport with id '%s' not found", id));
         }
         airportRepository.deleteById(id);
     }

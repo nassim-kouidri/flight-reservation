@@ -16,7 +16,7 @@ public class UserAccountService {
 
     public UserAccount getUserAccountById(UUID id) {
         return userAccountRepository.findById(id).
-                orElseThrow(() -> new IllegalArgumentException("User account not found"));
+                orElseThrow(() -> new IllegalArgumentException(String.format("User with id '%s' not found", id)));
     }
 
     public List<UserAccount> getAllUserAccounts() {
@@ -25,31 +25,30 @@ public class UserAccountService {
 
     public UserAccount saveUserAccount(UserAccount userAccount) {
         if (isEmailExists(userAccount.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
+            throw new IllegalArgumentException(String.format("The email '%s' already exist", userAccount.getEmail()));
         }
         return userAccountRepository.save(userAccount);
     }
 
 
-
-    public UserAccount updateUserAccount(UserAccount userAccount, UUID id) {
+    public UserAccount updateUserAccount(UserAccount userRequest, UUID id) {
         UserAccount user = getUserAccountById(id);
-        if(!user.getEmail().equals(userAccount.getEmail()) && isEmailExists(userAccount.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
+        if (!user.getEmail().equals(userRequest.getEmail()) && isEmailExists(userRequest.getEmail())) {
+            throw new IllegalArgumentException(String.format("The email '%s' already exist", userRequest.getEmail()));
         }
-        user.setEmail(userAccount.getEmail());
-        user.setFirstName(userAccount.getFirstName());
-        user.setLastName(userAccount.getLastName());
-        user.setAddress(userAccount.getAddress());
-        user.setBirthday(userAccount.getBirthday());
-        user.setTel(userAccount.getTel());
+        user.setEmail(userRequest.getEmail());
+        user.setFirstName(userRequest.getFirstName());
+        user.setLastName(userRequest.getLastName());
+        user.setAddress(userRequest.getAddress());
+        user.setBirthday(userRequest.getBirthday());
+        user.setTel(userRequest.getTel());
 
         return userAccountRepository.save(user);
     }
 
     public void deleteUserAccount(UUID id) {
         if (!userAccountRepository.existsById(id)) {
-            throw new IllegalArgumentException("User account not found");
+            throw new IllegalArgumentException(String.format("User with id '%s' not found", id));
         }
         userAccountRepository.deleteById(id);
     }
