@@ -3,6 +3,7 @@ package com.esiea.flightreservation.controller;
 import com.esiea.flightreservation.model.Flight;
 import com.esiea.flightreservation.service.FlightService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,6 +40,7 @@ public class FlightController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteFlight(@PathVariable UUID id) {
         flightService.deleteFlight(id);
     }

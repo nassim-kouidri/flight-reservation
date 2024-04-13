@@ -2,6 +2,7 @@ package com.esiea.flightreservation.service;
 
 import com.esiea.flightreservation.model.Flight;
 import com.esiea.flightreservation.repository.FlightRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -22,13 +23,15 @@ public class FlightService {
     }
 
     public Flight getFlightById(UUID id) {
-        return flightRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Flight not found"));
+        return flightRepository.findById(id).orElseThrow(() ->  new IllegalArgumentException(String.format("Flight with id '%s' not found", id)));
     }
 
+    @Transactional
     public Flight saveFlight(Flight flight) {
         return flightRepository.save(flight);
     }
 
+    @Transactional
     public Flight updateFlight(Flight flightRequest, UUID id) {
         Flight flight = getFlightById(id);
         flight.setAirportArrival(flightRequest.getAirportArrival());
@@ -42,11 +45,11 @@ public class FlightService {
         return flightRepository.save(flight);
     }
 
+    @Transactional
     public void deleteFlight(UUID id) {
         if (!flightRepository.existsById(id)) {
-
-            log.error("Flight not found");
-            throw new IllegalArgumentException("Flight not found");
+            log.error(String.format("Flight with id '%s' not found", id));
+            throw  new IllegalArgumentException(String.format("Flight with id '%s' not found", id));
         }
         flightRepository.deleteById(id);
     }

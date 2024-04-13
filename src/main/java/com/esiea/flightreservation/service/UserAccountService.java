@@ -2,6 +2,7 @@ package com.esiea.flightreservation.service;
 
 import com.esiea.flightreservation.model.UserAccount;
 import com.esiea.flightreservation.repository.UserAccountRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ public class UserAccountService {
         return userAccountRepository.findAll();
     }
 
+    @Transactional
     public UserAccount saveUserAccount(UserAccount userAccount) {
         if (isEmailExists(userAccount.getEmail())) {
             throw new IllegalArgumentException(String.format("The email '%s' already exist", userAccount.getEmail()));
@@ -31,6 +33,7 @@ public class UserAccountService {
     }
 
 
+    @Transactional
     public UserAccount updateUserAccount(UserAccount userRequest, UUID id) {
         UserAccount user = getUserAccountById(id);
         if (!user.getEmail().equals(userRequest.getEmail()) && isEmailExists(userRequest.getEmail())) {
@@ -46,6 +49,7 @@ public class UserAccountService {
         return userAccountRepository.save(user);
     }
 
+    @Transactional
     public void deleteUserAccount(UUID id) {
         if (!userAccountRepository.existsById(id)) {
             throw new IllegalArgumentException(String.format("User with id '%s' not found", id));

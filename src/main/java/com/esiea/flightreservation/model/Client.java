@@ -1,9 +1,6 @@
 package com.esiea.flightreservation.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +16,7 @@ public class Client extends BaseEntity {
     @Column(unique = true)
     int passportNumber;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_account_id")
     private UserAccount userAccount;
 

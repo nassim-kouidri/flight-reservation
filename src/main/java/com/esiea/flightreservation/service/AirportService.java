@@ -2,6 +2,7 @@ package com.esiea.flightreservation.service;
 
 import com.esiea.flightreservation.model.Airport;
 import com.esiea.flightreservation.repository.AirportRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +23,12 @@ public class AirportService {
         return airportRepository.findAll();
     }
 
+    @Transactional
     public Airport saveAirport(Airport airportRequest) {
         return airportRepository.save(airportRequest);
     }
 
+    @Transactional
     public Airport updateAirport(Airport airportRequest, UUID id) {
         Airport airport = getAirportById(id);
         airport.setName(airportRequest.getName());
@@ -35,6 +38,7 @@ public class AirportService {
         return airportRepository.save(airport);
     }
 
+    @Transactional
     public void deleteAirport(UUID id) {
         if (!airportRepository.existsById(id)) {
             throw new IllegalArgumentException(String.format("Airport with id '%s' not found", id));

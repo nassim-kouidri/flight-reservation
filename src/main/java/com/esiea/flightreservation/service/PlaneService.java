@@ -2,6 +2,7 @@ package com.esiea.flightreservation.service;
 
 import com.esiea.flightreservation.model.Plane;
 import com.esiea.flightreservation.repository.PlaneRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +23,12 @@ public class PlaneService {
         return planeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(String.format("Plane with id '%s' not found", id)));
     }
 
+    @Transactional
     public Plane savePlane(Plane plane) {
         return planeRepository.save(plane);
     }
 
+    @Transactional
     public Plane updatePlane(Plane planeRequest, UUID id) {
         Plane plane = getPlaneById(id);
         plane.setBrand(planeRequest.getBrand());
