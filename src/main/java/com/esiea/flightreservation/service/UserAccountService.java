@@ -4,20 +4,24 @@ import com.esiea.flightreservation.model.UserAccount;
 import com.esiea.flightreservation.repository.UserAccountRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class UserAccountService {
 
     private final UserAccountRepository userAccountRepository;
 
     public UserAccount getUserAccountById(UUID id) {
-        return userAccountRepository.findById(id).
-                orElseThrow(() -> new IllegalArgumentException(String.format("User with id '%s' not found", id)));
+        return userAccountRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("User with id '%s' not found", id)));
     }
 
     public List<UserAccount> getAllUserAccounts() {
@@ -26,9 +30,14 @@ public class UserAccountService {
 
     @Transactional
     public UserAccount saveUserAccount(UserAccount userAccount) {
-        if (isEmailExists(userAccount.getEmail())) {
-            throw new IllegalArgumentException(String.format("The email '%s' already exist", userAccount.getEmail()));
+        if (!isValidEmail(userAccount.getEmail())) {
+            log.error(String.format("Invalid email format: %s", userAccount.getEmail()));
+            throw new IllegalArgumentException(String.format("Invalid email format: %s", userAccount.getEmail()));
         }
+        if (isEmailExists(userAccount.getEmail())) {
+            throw new IllegalArgumentException(String.format("The email '%s' already exists", userAccount.getEmail()));
+        }
+
         return userAccountRepository.save(userAccount);
     }
 
@@ -36,9 +45,14 @@ public class UserAccountService {
     @Transactional
     public UserAccount updateUserAccount(UserAccount userRequest, UUID id) {
         UserAccount user = getUserAccountById(id);
-        if (!user.getEmail().equals(userRequest.getEmail()) && isEmailExists(userRequest.getEmail())) {
-            throw new IllegalArgumentException(String.format("The email '%s' already exist", userRequest.getEmail()));
+        if (!isValidEmail(userRequest.getEmail())) {
+            log.error(String.format("Invalid email format: %s", userRequest.getEmail()));
+            throw new IllegalArgumentException(String.format("Invalid email format: %s", userRequest.getEmail()));
         }
+        if (!user.getEmail().equals(userRequest.getEmail()) && isEmailExists(userRequest.getEmail())) {
+            throw new IllegalArgumentException(String.format("The email '%s' already exists", userRequest.getEmail()));
+        }
+
         user.setEmail(userRequest.getEmail());
         user.setFirstName(userRequest.getFirstName());
         user.setLastName(userRequest.getLastName());
@@ -60,4 +74,11 @@ public class UserAccountService {
     private boolean isEmailExists(String email) {
         return userAccountRepository.existsByEmail(email);
     }
+
+    public boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        Matcher matcher = Pattern.compile(emailRegex).matcher(email);
+        return matcher.matches();
+    }
+
 }
