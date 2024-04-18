@@ -15,7 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
-public class Flight extends BaseEntity{
+public class Flight extends BaseEntity {
 
     private String departure;
 

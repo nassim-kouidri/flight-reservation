@@ -6,6 +6,6 @@ public record FlightSearchRequest(
         String departure,
         String destination,
         Date departDate,
-        Date arrivalDate
-) {}
+        Date arrivalDate) {
+}
 
