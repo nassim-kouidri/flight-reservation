@@ -10,5 +10,5 @@ import java.util.UUID;
 
 @Repository
 public interface FlightRepository extends JpaRepository<Flight, UUID> {
-    List<Flight> findByDestinationAndDepartDateGreaterThanEqualAndArrivalDateLessThanEqual(String destination, Date departureDate, Date arrivalDate);
+    List<Flight> findByDepartureAndDestinationAndDepartDateBetween(String departure, String destination, Date departDate, Date arrivalDate);
 }

@@ -1,6 +1,7 @@
 package com.esiea.flightreservation.controller;
 
 import com.esiea.flightreservation.dto.FlightRequest;
+import com.esiea.flightreservation.dto.FlightSearchRequest;
 import com.esiea.flightreservation.model.Flight;
 import com.esiea.flightreservation.service.FlightService;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,11 @@ public class FlightController {
     @GetMapping("/{id}")
     public Flight getFlightById(@PathVariable UUID id) {
         return flightService.getFlightById(id);
+    }
+
+    @PostMapping("/search")
+    public List<Flight> searchFlights(@RequestBody FlightSearchRequest flightSearchRequest) {
+        return flightService.searchFlightsByDepartureAndDestination(flightSearchRequest);
     }
 
     @PostMapping("/save")

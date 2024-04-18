@@ -1,6 +1,7 @@
 package com.esiea.flightreservation.service;
 
 import com.esiea.flightreservation.dto.FlightRequest;
+import com.esiea.flightreservation.dto.FlightSearchRequest;
 import com.esiea.flightreservation.model.Airport;
 import com.esiea.flightreservation.model.Client;
 import com.esiea.flightreservation.model.Flight;
@@ -11,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,6 +31,15 @@ public class FlightService {
 
     public Flight getFlightById(UUID id) {
         return flightRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(String.format("Flight with id '%s' not found", id)));
+    }
+
+    public List<Flight> searchFlightsByDepartureAndDestination(FlightSearchRequest request) {
+        return flightRepository.findByDepartureAndDestinationAndDepartDateBetween(
+                request.departure(),
+                request.destination(),
+                request.departDate(),
+                request.arrivalDate()
+        );
     }
 
     @Transactional
@@ -64,10 +73,6 @@ public class FlightService {
             throw new IllegalArgumentException(String.format("Flight with id '%s' not found", id));
         }
         flightRepository.deleteById(id);
-    }
-
-    public List<Flight> searchFlights(String destination, Date departureDate, Date arrivalDate) {
-        return flightRepository.findByDestinationAndDepartDateGreaterThanEqualAndArrivalDateLessThanEqual(destination, departureDate, arrivalDate);
     }
 
     private Flight createOrUpdateFlight(Flight flight, FlightRequest flightRequest, Client client,
