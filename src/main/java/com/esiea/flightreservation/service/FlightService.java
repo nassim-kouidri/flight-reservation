@@ -1,6 +1,9 @@
 package com.esiea.flightreservation.service;
 
+import com.esiea.flightreservation.dto.FlightRequest;
+import com.esiea.flightreservation.model.Airport;
 import com.esiea.flightreservation.model.Flight;
+import com.esiea.flightreservation.model.Plane;
 import com.esiea.flightreservation.repository.FlightRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -17,45 +20,63 @@ import java.util.UUID;
 public class FlightService {
 
     private final FlightRepository flightRepository;
+    private final AirportService airportService;
+    private final PlaneService planeService;
 
     public List<Flight> getAllFlights() {
         return flightRepository.findAll();
     }
 
     public Flight getFlightById(UUID id) {
-        return flightRepository.findById(id).orElseThrow(() ->  new IllegalArgumentException(String.format("Flight with id '%s' not found", id)));
+        return flightRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(String.format("Flight with id '%s' not found", id)));
     }
 
     @Transactional
-    public Flight saveFlight(Flight flight) {
+    public Flight saveFlight(FlightRequest flightRequest) {
+        Plane plane = planeService.getPlaneById(flightRequest.planeId());
+        Airport airportDepart = airportService.getAirportById(flightRequest.airportDepartId());
+        Airport airportArrival = airportService.getAirportById(flightRequest.airportArrivalId());
+
+        Flight flight = createOrUpdateFlight(new Flight(), flightRequest, plane, airportDepart, airportArrival);
+
         return flightRepository.save(flight);
     }
 
     @Transactional
-    public Flight updateFlight(Flight flightRequest, UUID id) {
+    public Flight updateFlight(FlightRequest flightRequest, UUID id) {
+        Plane plane = planeService.getPlaneById(flightRequest.planeId());
+        Airport airportDepart = airportService.getAirportById(flightRequest.airportDepartId());
+        Airport airportArrival = airportService.getAirportById(flightRequest.airportArrivalId());
         Flight flight = getFlightById(id);
-        flight.setAirportArrival(flightRequest.getAirportArrival());
-        flight.setAirportDepart(flightRequest.getAirportDepart());
-        flight.setArrivalDate(flightRequest.getArrivalDate());
-        flight.setDepartDate(flightRequest.getDepartDate());
-        flight.setDestination(flightRequest.getDestination());
-        flight.setPlane(flightRequest.getPlane());
-        flight.setPlaceNumber(flightRequest.getPlaceNumber());
 
-        return flightRepository.save(flight);
+        return createOrUpdateFlight(flight, flightRequest, plane, airportDepart, airportArrival);
     }
 
     @Transactional
     public void deleteFlight(UUID id) {
         if (!flightRepository.existsById(id)) {
             log.error(String.format("Flight with id '%s' not found", id));
-            throw  new IllegalArgumentException(String.format("Flight with id '%s' not found", id));
+            throw new IllegalArgumentException(String.format("Flight with id '%s' not found", id));
         }
         flightRepository.deleteById(id);
     }
 
     public List<Flight> searchFlights(String destination, Date departureDate, Date arrivalDate) {
         return flightRepository.findByDestinationAndDepartDateGreaterThanEqualAndArrivalDateLessThanEqual(destination, departureDate, arrivalDate);
+    }
+
+    private Flight createOrUpdateFlight(Flight flight, FlightRequest flightRequest,
+                                        Plane plane, Airport airportDepart, Airport airportArrival) {
+        flight.setDeparture(flightRequest.departure());
+        flight.setDestination(flightRequest.destination());
+        flight.setDepartDate(flightRequest.departDate());
+        flight.setArrivalDate(flightRequest.arrivalDate());
+        flight.setPlaceNumber(flightRequest.placeNumber());
+        flight.setAirportDepart(airportDepart);
+        flight.setAirportArrival(airportArrival);
+        flight.setPlane(plane);
+
+        return flight;
     }
 
 }

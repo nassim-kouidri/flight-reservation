@@ -1,6 +1,6 @@
 package com.esiea.flightreservation.service;
 
-import com.esiea.flightreservation.dto.CreateClientRequest;
+import com.esiea.flightreservation.dto.ClientRequest;
 import com.esiea.flightreservation.model.Client;
 import com.esiea.flightreservation.model.UserAccount;
 import com.esiea.flightreservation.repository.ClientRepository;
@@ -29,24 +29,24 @@ public class ClientService {
     }
 
     @Transactional
-    public Client saveClient(CreateClientRequest createClientRequest) {
-        validatePassportNumber(createClientRequest.passportNumber());
+    public Client saveClient(ClientRequest clientRequest) {
+        validatePassportNumber(clientRequest.passportNumber());
 
-        UserAccount user = getUserAccount(createClientRequest.userAccountId());
+        UserAccount user = getUserAccount(clientRequest.userAccountId());
         Client client = new Client();
-        client.setPassportNumber(createClientRequest.passportNumber());
+        client.setPassportNumber(clientRequest.passportNumber());
         client.setUserAccount(user);
 
         return clientRepository.save(client);
     }
 
     @Transactional
-    public Client updateClient(UUID clientId, CreateClientRequest createClientRequest) {
+    public Client updateClient(UUID clientId, ClientRequest clientRequest) {
         Client client = getClientById(clientId);
-        validatePassportNumber(createClientRequest.passportNumber());
+        validatePassportNumber(clientRequest.passportNumber());
 
-        UserAccount user = getUserAccount(createClientRequest.userAccountId());
-        client.setPassportNumber(createClientRequest.passportNumber());
+        UserAccount user = getUserAccount(clientRequest.userAccountId());
+        client.setPassportNumber(clientRequest.passportNumber());
         client.setUserAccount(user);
 
         return clientRepository.save(client);

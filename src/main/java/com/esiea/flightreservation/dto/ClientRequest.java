@@ -5,7 +5,7 @@ import lombok.NonNull;
 
 import java.util.UUID;
 
-public record CreateClientRequest(
+public record ClientRequest(
         int passportNumber,
 
         @NonNull

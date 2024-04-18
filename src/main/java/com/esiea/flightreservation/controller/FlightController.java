@@ -1,5 +1,6 @@
 package com.esiea.flightreservation.controller;
 
+import com.esiea.flightreservation.dto.FlightRequest;
 import com.esiea.flightreservation.model.Flight;
 import com.esiea.flightreservation.service.FlightService;
 import lombok.RequiredArgsConstructor;
@@ -30,13 +31,13 @@ public class FlightController {
     }
 
     @PostMapping("/save")
-    public Flight saveFlight(@RequestBody Flight flight) {
-        return flightService.saveFlight(flight);
+    public Flight saveFlight(@RequestBody FlightRequest flightRequest) {
+        return flightService.saveFlight(flightRequest);
     }
 
     @PutMapping("/update/{id}")
-    public Flight updateFlight(@RequestBody Flight flight, @PathVariable UUID id) {
-        return flightService.updateFlight(flight, id);
+    public Flight updateFlight(@RequestBody FlightRequest flightRequest, @PathVariable UUID id) {
+        return flightService.updateFlight(flightRequest, id);
     }
 
     @DeleteMapping("/delete/{id}")

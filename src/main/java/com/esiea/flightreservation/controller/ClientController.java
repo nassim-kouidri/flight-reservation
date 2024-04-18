@@ -1,6 +1,6 @@
 package com.esiea.flightreservation.controller;
 
-import com.esiea.flightreservation.dto.CreateClientRequest;
+import com.esiea.flightreservation.dto.ClientRequest;
 import com.esiea.flightreservation.model.Client;
 import com.esiea.flightreservation.service.ClientService;
 import lombok.RequiredArgsConstructor;
@@ -31,14 +31,14 @@ public class ClientController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<Client> saveClient(@RequestBody CreateClientRequest createClientRequest) {
-        Client savedClient = clientService.saveClient(createClientRequest);
+    public ResponseEntity<Client> saveClient(@RequestBody ClientRequest clientRequest) {
+        Client savedClient = clientService.saveClient(clientRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedClient);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Client> updateClient(@RequestBody CreateClientRequest createClientRequest, @PathVariable UUID id) {
-        Client updateClient = clientService.updateClient(id, createClientRequest);
+    public ResponseEntity<Client> updateClient(@RequestBody ClientRequest clientRequest, @PathVariable UUID id) {
+        Client updateClient = clientService.updateClient(id, clientRequest);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(updateClient);
     }
 
