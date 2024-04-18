@@ -2,6 +2,7 @@ package com.esiea.flightreservation.service;
 
 import com.esiea.flightreservation.dto.FlightRequest;
 import com.esiea.flightreservation.model.Airport;
+import com.esiea.flightreservation.model.Client;
 import com.esiea.flightreservation.model.Flight;
 import com.esiea.flightreservation.model.Plane;
 import com.esiea.flightreservation.repository.FlightRepository;
@@ -22,6 +23,7 @@ public class FlightService {
     private final FlightRepository flightRepository;
     private final AirportService airportService;
     private final PlaneService planeService;
+    private final ClientService clientService;
 
     public List<Flight> getAllFlights() {
         return flightRepository.findAll();
@@ -36,8 +38,9 @@ public class FlightService {
         Plane plane = planeService.getPlaneById(flightRequest.planeId());
         Airport airportDepart = airportService.getAirportById(flightRequest.airportDepartId());
         Airport airportArrival = airportService.getAirportById(flightRequest.airportArrivalId());
+        Client client = clientService.getClientById(flightRequest.clientId());
 
-        Flight flight = createOrUpdateFlight(new Flight(), flightRequest, plane, airportDepart, airportArrival);
+        Flight flight = createOrUpdateFlight(new Flight(), flightRequest, client, plane, airportDepart, airportArrival);
 
         return flightRepository.save(flight);
     }
@@ -47,9 +50,11 @@ public class FlightService {
         Plane plane = planeService.getPlaneById(flightRequest.planeId());
         Airport airportDepart = airportService.getAirportById(flightRequest.airportDepartId());
         Airport airportArrival = airportService.getAirportById(flightRequest.airportArrivalId());
+        Client client = clientService.getClientById(flightRequest.clientId());
+
         Flight flight = getFlightById(id);
 
-        return createOrUpdateFlight(flight, flightRequest, plane, airportDepart, airportArrival);
+        return createOrUpdateFlight(flight, flightRequest, client, plane, airportDepart, airportArrival);
     }
 
     @Transactional
@@ -65,7 +70,7 @@ public class FlightService {
         return flightRepository.findByDestinationAndDepartDateGreaterThanEqualAndArrivalDateLessThanEqual(destination, departureDate, arrivalDate);
     }
 
-    private Flight createOrUpdateFlight(Flight flight, FlightRequest flightRequest,
+    private Flight createOrUpdateFlight(Flight flight, FlightRequest flightRequest, Client client,
                                         Plane plane, Airport airportDepart, Airport airportArrival) {
         flight.setDeparture(flightRequest.departure());
         flight.setDestination(flightRequest.destination());
@@ -75,6 +80,7 @@ public class FlightService {
         flight.setAirportDepart(airportDepart);
         flight.setAirportArrival(airportArrival);
         flight.setPlane(plane);
+        flight.setClient(client);
 
         return flight;
     }

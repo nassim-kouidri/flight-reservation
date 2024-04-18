@@ -31,8 +31,9 @@ public class UserAccountService {
     @Transactional
     public UserAccount saveUserAccount(UserAccount userAccount) {
         if (!isValidEmail(userAccount.getEmail())) {
-            log.error(String.format("Invalid email format: %s", userAccount.getEmail()));
-            throw new IllegalArgumentException(String.format("Invalid email format: %s", userAccount.getEmail()));
+            String errorMessage = String.format("Invalid email format: %s", userAccount.getEmail());
+            log.error(errorMessage);
+            throw new IllegalArgumentException(errorMessage);
         }
         if (isEmailExists(userAccount.getEmail())) {
             throw new IllegalArgumentException(String.format("The email '%s' already exists", userAccount.getEmail()));
@@ -46,8 +47,9 @@ public class UserAccountService {
     public UserAccount updateUserAccount(UserAccount userRequest, UUID id) {
         UserAccount user = getUserAccountById(id);
         if (!isValidEmail(userRequest.getEmail())) {
-            log.error(String.format("Invalid email format: %s", userRequest.getEmail()));
-            throw new IllegalArgumentException(String.format("Invalid email format: %s", userRequest.getEmail()));
+            String errorMessage = String.format("Invalid email format: %s", userRequest.getEmail());
+            log.error(errorMessage);
+            throw new IllegalArgumentException(errorMessage);
         }
         if (!user.getEmail().equals(userRequest.getEmail()) && isEmailExists(userRequest.getEmail())) {
             throw new IllegalArgumentException(String.format("The email '%s' already exists", userRequest.getEmail()));
