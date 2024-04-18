@@ -34,7 +34,7 @@ public class FlightService {
     }
 
     public List<Flight> searchFlightsByDepartureAndDestination(FlightSearchRequest request) {
-        return flightRepository.findByDepartureAndDestinationAndDepartDateBetween(
+        return flightRepository.findByDepartureAndDestinationAndDepartDateAndArrivalDate(
                 request.departure(),
                 request.destination(),
                 request.departDate(),
