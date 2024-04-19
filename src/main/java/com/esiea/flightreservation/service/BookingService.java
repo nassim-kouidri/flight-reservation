@@ -5,6 +5,7 @@ import com.esiea.flightreservation.model.Booking;
 import com.esiea.flightreservation.model.Client;
 import com.esiea.flightreservation.model.Flight;
 import com.esiea.flightreservation.repository.BookingRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ public class BookingService {
         return bookingRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(String.format("Booking with id '%s' not found", id)));
     }
 
-
+    @Transactional
     public Booking saveBooking(BookingRequest bookingRequest) {
         Client client = clientService.getClientById(bookingRequest.clientId());
         Flight flight = flightService.getFlightById(bookingRequest.flightId());
@@ -39,6 +40,5 @@ public class BookingService {
 
         return bookingRepository.save(booking);
     }
-
 
 }

@@ -1,8 +1,10 @@
 package com.esiea.flightreservation.service;
 
 import com.esiea.flightreservation.dto.ClientRequest;
+import com.esiea.flightreservation.model.Booking;
 import com.esiea.flightreservation.model.Client;
 import com.esiea.flightreservation.model.UserAccount;
+import com.esiea.flightreservation.repository.BookingRepository;
 import com.esiea.flightreservation.repository.ClientRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -18,6 +20,7 @@ public class ClientService {
 
     private final ClientRepository clientRepository;
     private final UserAccountService userAccountService;
+    private final BookingRepository bookingRepository;
 
     public Client getClientById(UUID id) {
         return clientRepository.findById(id)
@@ -57,6 +60,7 @@ public class ClientService {
         if (!clientRepository.existsById(id)) {
             throw new EntityNotFoundException("Client not found with id: " + id);
         }
+        deleteBookingsByClientId(id);
         clientRepository.deleteById(id);
     }
 
@@ -68,6 +72,17 @@ public class ClientService {
 
     private UserAccount getUserAccount(UUID userAccountId) {
         return userAccountService.getUserAccountById(userAccountId);
+    }
+
+    public List<Booking> getAllBookingsByClientId(UUID clientId) {
+        return bookingRepository.findByClientId(clientId);
+    }
+
+    @Transactional
+    public void deleteBookingsByClientId(UUID clientId) {
+        if (!getAllBookingsByClientId(clientId).isEmpty()) {
+            bookingRepository.deleteByClientId(clientId);
+        }
     }
 }
 
