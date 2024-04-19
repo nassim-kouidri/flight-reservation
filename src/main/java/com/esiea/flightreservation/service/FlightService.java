@@ -47,9 +47,8 @@ public class FlightService {
         Plane plane = planeService.getPlaneById(flightRequest.planeId());
         Airport airportDepart = airportService.getAirportById(flightRequest.airportDepartId());
         Airport airportArrival = airportService.getAirportById(flightRequest.airportArrivalId());
-        Client client = clientService.getClientById(flightRequest.clientId());
 
-        Flight flight = createOrUpdateFlight(new Flight(), flightRequest, client, plane, airportDepart, airportArrival);
+        Flight flight = createOrUpdateFlight(new Flight(), flightRequest, plane, airportDepart, airportArrival);
 
         return flightRepository.save(flight);
     }
@@ -59,11 +58,10 @@ public class FlightService {
         Plane plane = planeService.getPlaneById(flightRequest.planeId());
         Airport airportDepart = airportService.getAirportById(flightRequest.airportDepartId());
         Airport airportArrival = airportService.getAirportById(flightRequest.airportArrivalId());
-        Client client = clientService.getClientById(flightRequest.clientId());
 
         Flight flight = getFlightById(id);
 
-        return createOrUpdateFlight(flight, flightRequest, client, plane, airportDepart, airportArrival);
+        return createOrUpdateFlight(flight, flightRequest, plane, airportDepart, airportArrival);
     }
 
     @Transactional
@@ -75,7 +73,7 @@ public class FlightService {
         flightRepository.deleteById(id);
     }
 
-    private Flight createOrUpdateFlight(Flight flight, FlightRequest flightRequest, Client client,
+    private Flight createOrUpdateFlight(Flight flight, FlightRequest flightRequest,
                                         Plane plane, Airport airportDepart, Airport airportArrival) {
         flight.setDeparture(flightRequest.departure());
         flight.setDestination(flightRequest.destination());
@@ -85,7 +83,6 @@ public class FlightService {
         flight.setAirportDepart(airportDepart);
         flight.setAirportArrival(airportArrival);
         flight.setPlane(plane);
-        flight.setClient(client);
 
         return flight;
     }

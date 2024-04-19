@@ -16,7 +16,7 @@ public class Client extends BaseEntity {
     @Column(unique = true)
     int passportNumber;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_account_id")
     private UserAccount userAccount;
 

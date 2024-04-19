@@ -19,7 +19,5 @@ public record FlightRequest(
 
         UUID airportArrivalId,
 
-        UUID planeId,
-
-        UUID clientId) {
+        UUID planeId) {
 }

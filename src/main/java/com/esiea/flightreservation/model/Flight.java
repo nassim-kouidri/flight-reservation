@@ -39,8 +39,4 @@ public class Flight extends BaseEntity {
     @JoinColumn(name = "plane_id")
     private Plane plane;
 
-    @ManyToOne
-    @JoinColumn(name = "client_id")
-    private Client client;
-
 }
