@@ -29,7 +29,12 @@ public class BookingController {
     }
 
     @PostMapping("/save")
-    public Booking saveAirport(@RequestBody BookingRequest bookingRequest) {
+    public Booking saveBooking(@RequestBody BookingRequest bookingRequest) {
         return bookingService.saveBooking(bookingRequest);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public void deleteBooking(@PathVariable UUID id) {
+        bookingService.deleteBooking(id);
     }
 }

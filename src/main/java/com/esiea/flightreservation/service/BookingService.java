@@ -41,4 +41,12 @@ public class BookingService {
         return bookingRepository.save(booking);
     }
 
+    @Transactional
+    public void deleteBooking (UUID id) {
+        if (!bookingRepository.existsById(id)) {
+            throw new IllegalArgumentException(String.format("Booking with id '%s' not found", id));
+        }
+        bookingRepository.deleteById(id);
+    }
+
 }
