@@ -86,7 +86,6 @@ public class FlightServiceTest {
                 100,
                 UUID.randomUUID(),
                 UUID.randomUUID(),
-                UUID.randomUUID(),
                 UUID.randomUUID());
     }
 }
